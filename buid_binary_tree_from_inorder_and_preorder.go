@@ -17,9 +17,7 @@ var inorder_node_map map[int]int
 
 func makeTree(preorder []int, inorder []int, preorder_left int, preorder_right int, inorder_left int, inorder_right int) *TreeNode {
 	//通过前序遍历获取根节点
-	preorder_len := preorder_right - preorder_left
-	inorder_len := inorder_right - inorder_left
-	if preorder_left >= preorder_right {
+	if preorder_left > preorder_right {
 		return nil
 	}
 	root_val := preorder[preorder_left]
@@ -29,7 +27,7 @@ func makeTree(preorder []int, inorder []int, preorder_left int, preorder_right i
 	root_index := inorder_node_map[root_val]
 	size_left_subtree := root_index - inorder_left
 	node.Left = makeTree(preorder, inorder, preorder_left+1, preorder_left+size_left_subtree, inorder_left, root_index)
-	node.Right = makeTree(preorder, inorder, preorder_left+size_left_subtree, preorder_len, root_index, inorder_len)
+	node.Right = makeTree(preorder, inorder, preorder_left+size_left_subtree+1, preorder_right, root_index+1, inorder_right)
 	return node
 }
 func buildTree(preorder []int, inorder []int) *TreeNode {
@@ -42,14 +40,16 @@ func buildTree(preorder []int, inorder []int) *TreeNode {
 	return makeTree(preorder, inorder, 0, len(preorder)-1, 0, len(inorder)-1)
 }
 func printTree(tree *TreeNode) string {
-	str := ""
+	pstr := ""
 	if tree == nil {
-		return ""
+		pstr += "nil"
+		return fmt.Sprintf("%v, ", pstr)
+
 	}
-	str += fmt.Sprintf("%v, ", tree.Val)
-	str += printTree(tree.Left)
-	str += printTree(tree.Right)
-	return str
+	pstr += fmt.Sprintf("%v, ", tree.Val)
+	pstr += printTree(tree.Left)
+	pstr += printTree(tree.Right)
+	return pstr
 }
 
 func main() {
