@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 func part_sort(arr []int, left int, right int) int {
 	key := arr[right]
 	for left < right {
@@ -54,6 +52,6 @@ func main() {
 	}
 	for _, test_case := range test_cases {
 		median := median_in_array(test_case)
-		fmt.Printf("数组: %v, 中位数为：%v\n", test_case, median)
+		fmt.printf("数组: %v, 中位数为：%v\n", test_case, median)
 	}
 }
