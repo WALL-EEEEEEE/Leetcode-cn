@@ -2,8 +2,8 @@ package main
 
 import (
 	. "algorithm/structs"
+	"container/list"
 	"fmt"
-	"math"
 )
 
 /**
@@ -18,17 +18,24 @@ func maxDepth(root *TreeNode) int {
 	if root == nil {
 		return 0
 	}
-	var left_depth, right_depth int
-	if root.Left != nil {
-		left_depth = maxDepth(root.Left) + 1
+	queue := list.New()
+	var depth int
+	queue.PushBack(root)
+	for queue.Len() > 0 {
+		size := queue.Len()
+		for i := 0; i < size; i++ {
+			node := queue.Front().Value.(*TreeNode)
+			queue.Remove(queue.Front())
+			if node.Left != nil {
+				queue.PushBack(node.Left)
+			}
+			if node.Right != nil {
+				queue.PushBack(node.Right)
+			}
+		}
+		depth++
 	}
-	if root.Right != nil {
-		right_depth = maxDepth(root.Right) + 1
-	}
-	if root.Left == nil && root.Right == nil {
-		return 1
-	}
-	return int(math.Max(float64(left_depth), float64(right_depth)))
+	return depth
 }
 
 func main() {
@@ -48,27 +55,25 @@ func main() {
 				},
 			},
 		},
-		/*
-			&TreeNode{
-				Val: 1,
+		&TreeNode{
+			Val: 1,
+			Left: &TreeNode{
+				Val: 2,
 				Left: &TreeNode{
-					Val: 2,
+					Val: 3,
 					Left: &TreeNode{
-						Val: 3,
+						Val: 4,
 						Left: &TreeNode{
-							Val: 4,
-							Left: &TreeNode{
-								Val: 5,
-							},
+							Val: 5,
 						},
 					},
 				},
 			},
-			&TreeNode{
-				Val: 1,
-			},
-			&TreeNode{},
-		*/
+		},
+		&TreeNode{
+			Val: 1,
+		},
+		&TreeNode{},
 	}
 	for _, test_case := range test_cases {
 		depth := maxDepth(test_case)
