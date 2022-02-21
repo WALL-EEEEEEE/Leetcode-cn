@@ -2,44 +2,37 @@ package main
 
 import "fmt"
 
-func swap(arr []int, i, j int) {
-	tmp := arr[i]
-	arr[i] = arr[j]
-	arr[j] = tmp
-}
-
-func part_sort(arr []int, left int, right int) int {
-	key := arr[right]
-	i, j := left, left
-	for j < right {
-		if arr[j] < key {
+func pardition(arr []int, left int, right int) int {
+	pivot := arr[right]
+	var i, j int
+	for i, j = left-1, left; j < right; j++ {
+		if arr[j] < pivot {
 			i++
-			swap(arr, i, j)
+			arr[i], arr[j] = arr[j], arr[i]
 		}
 		j++
 	}
-	swap(arr, i+1, j)
+	arr[i+1], arr[right] = arr[right], arr[i+1]
 	return i + 1
 }
 
 func median_in_array(arr []int) int {
-	var median_index int
-	median_index = len(arr) / 2
-	q, left, right := 0, 0, len(arr)-1
-	q = part_sort(arr, left, right)
-	for q <= right {
-		if q < median_index {
-			q = part_sort(arr, q+1, right)
-		} else if q > median_index {
-			q = part_sort(arr, left, q-1)
+	var median_index int = len(arr) / 2
+	left, right := 0, len(arr)-1
+	p := pardition(arr, left, right)
+	for p != median_index {
+		if p < median_index {
+			p = pardition(arr, left+1, right)
+		} else if left > median_index {
+			p = pardition(arr, 0, left-1)
 		} else {
 			break
 		}
 	}
 	if len(arr)%2 == 0 {
-		return (arr[q] + arr[q-1]) / 2
+		return (arr[p] + arr[p-1]) / 2
 	}
-	return arr[q]
+	return arr[p]
 }
 
 func main() {
@@ -57,6 +50,6 @@ func main() {
 	for _, test_case := range test_cases {
 		fmt.Printf("数组: %v, ", test_case)
 		median := median_in_array(test_case)
-		fmt.Printf("中位数为：%v\n", median)
+		fmt.Printf("数组: %v, 中位数为：%v\n", test_case, median)
 	}
 }
